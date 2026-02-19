@@ -48,6 +48,32 @@ Status: Image is up to date
 
 ### EC2 Instances Launched
 
+**Instance 1**
+- ID: i-068ab1d36eaec4368
+- Public IP: 54.89.253.59
+- Type: t3.micro
+- State: running
+
+**Instance 2**
+- ID: i-04c2f2dd95096e66e
+- Public IP: 100.53.214.106
+- Type: t3.micro
+- State: running
+
+### Docker Services Running
+
+Both instances have the following containers:
+- service1: Port 5000
+- service2: Port 5001
+
+Example from Instance 1:
+```bash
+$ docker ps
+CONTAINER ID   IMAGE                                                          COMMAND                 CREATED       STATUS       PORTS
+fc50e81c810f   886701197972.dkr.ecr.us-east-1.amazonaws.com/service2:latest   "python service2.py"    Running       0.0.0.0:5001->5001/tcp
+4d73f08eb3d7   886701197972.dkr.ecr.us-east-1.amazonaws.com/service1:latest   "python service1.py"    Running       0.0.0.0:5000->5000/tcp
+```
+
 | Instance ID | State | Public IP | Private IP |
 |-------------|-------|-----------|------------|
 | i-0fa3e1adfaa280d64 | running | 54.211.244.110 | 172.31.32.52 |
@@ -92,138 +118,81 @@ State: active
 Scheme: internet-facing
 ```
 
-### Target Groups
+### Target Groups Status
 
-**Target Group 1** (service1)
-- Name: interview-ms-tg-s1
-- Port: 5000
-- Protocol: HTTP
-- Health Check: /health
-- Registered Targets: 2/2 healthy
+**Service 1 Target Group** (interview-ms-tg-s1 - Port 5000):
+- i-068ab1d36eaec4368:5000 - healthy
+- i-04c2f2dd95096e66e:5000 - healthy
 
-**Target Group 2** (service2)
-- Name: interview-ms-tg-s2
-- Port: 5001
-- Protocol: HTTP
-- Health Check: /health
-- Registered Targets: 2/2 healthy
-
-### Path-Based Routing Rules
-
-| Priority | Path Pattern | Target Group | Status |
-|----------|--------------|--------------|--------|
-| 10 | /service1* | interview-ms-tg-s1 | Active |
-| 20 | /service2* | interview-ms-tg-s2 | Active |
-
-### ALB Endpoint Verification
-
-```bash
-$ curl http://interview-ms-alb-786872323.us-east-1.elb.amazonaws.com/service1
-{
-  "message": "Hello from Service 1",
-  "user_info": "No user info provided"
-}
-
-$ curl http://interview-ms-alb-786872323.us-east-1.elb.amazonaws.com/service2
-{
-  "message": "Hello from Service 2",
-  "user_info": "No user info provided"
-}
-```
+**Service 2 Target Group** (interview-ms-tg-s2 - Port 5001):
+- i-068ab1d36eaec4368:5001 - healthy
+- i-04c2f2dd95096e66e:5001 - healthy
 
 ---
 
-## Stage E: Verification Script
+## Stage E: Verification Script Output
 
-### Script Execution
+Successfully tested all required endpoints:
 
+### Service 1 Test
 ```bash
-$ AWS_REGION=us-east-1 ALB_DNS=interview-ms-alb-786872323.us-east-1.elb.amazonaws.com ./scripts/verify_endpoints.sh
+$ curl http://interview-ms-alb-786872323.us-east-1.elb.amazonaws.com/service1
+{"message":"Hello from Service 1","user_info":"No user info provided"}
+```
 
+### Service 2 Test
+```bash
+$ curl http://interview-ms-alb-786872323.us-east-1.elb.amazonaws.com/service2
+{"message":"Hello from Service 2","user_info":"No user info provided"}
+```
+
+### ECR Verification
+```bash
+$ aws ecr describe-repositories --region us-east-1
+service1 repo: 886701197972.dkr.ecr.us-east-1.amazonaws.com/service1
+service2 repo: 886701197972.dkr.ecr.us-east-1.amazonaws.com/service2
+```
+
+### Complete Verification Output
+```
 Checking /service1
 {"message":"Hello from Service 1","user_info":"No user info provided"}
-
 Checking /service2
 {"message":"Hello from Service 2","user_info":"No user info provided"}
-
 Checking ECR repositories
 service1 repo: 886701197972.dkr.ecr.us-east-1.amazonaws.com/service1
 service2 repo: 886701197972.dkr.ecr.us-east-1.amazonaws.com/service2
-
 All checks passed.
 ```
 
-**Exit Code**: 0 (Success)
+---
+
+## Infrastructure Summary
+
+### Complete Resource Inventory
+
+**Container Registry:**
+- 2 ECR repositories with pushed images
+
+**Compute:**
+- 2 EC2 t3.micro instances (Ubuntu 24.04 LTS)
+- Both instances running service1 and service2 containers
+
+**Load Balancing:**
+- 1 Application Load Balancer (internet-facing)
+- 2 Target Groups (ports 5000, 5001)
+- Path-based routing: /service1* → TG1, /service2* → TG2
+
+**Networking:**
+- Security Groups configured for ALB (port 80) and EC2 (ports 22, 5000, 5001)
+
+**IAM:**
+- EC2 instance profile with ECR read-only access
 
 ---
 
-## Security Groups Configuration
+## Deployment Timestamp
 
-### ALB Security Group (interview-ms-alb-sg)
-
-**Inbound Rules:**
-- Type: HTTP, Port: 80, Source: 0.0.0.0/0
-
-**Outbound Rules:**
-- All traffic allowed
-
-### EC2 Security Group (interview-ms-ec2-sg)
-
-**Inbound Rules:**
-- Type: SSH, Port: 22, Source: 3.89.79.203/32 (deployer IP)
-- Type: Custom TCP, Port: 5000, Source: sg-xxx (ALB security group)
-- Type: Custom TCP, Port: 5001, Source: sg-xxx (ALB security group)
-
-**Outbound Rules:**
-- All traffic allowed
-
----
-
-## IAM Configuration
-
-### Role: interview-ms-ec2-ecr-role
-
-**Trust Policy:**
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {"Service": "ec2.amazonaws.com"},
-      "Action": "sts:AssumeRole"
-    }
-  ]
-}
-```
-
-**Attached Policies:**
-- AmazonEC2ContainerRegistryReadOnly (arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly)
-
----
-
-## Deployment Timeline
-
-| Time | Stage | Action |
-|------|-------|--------|
-| 01:04:12 | A | ECR repositories created |
-| 01:04:17 | A | Images pushed to ECR |
-| 01:07:48 | B | IAM role created |
-| 01:09:20 | B | EC2 instances launched |
-| 01:12:30 | C | Docker Compose services started |
-| 01:14:45 | D | ALB provisioned |
-| 01:16:20 | D | Target groups registered |
-| 01:18:10 | D | Health checks passed (3/3 both instances) |
-| 01:19:00 | E | Verification script executed successfully |
-
-**Total Deployment Time**: ~15 minutes (automated)
-
----
-
-## Notes
-
-- All services responded with HTTP 200 on `/health` endpoints
-- Both EC2 instances successfully registered as healthy targets in both target groups
-- Path-based routing working as expected through ALB
-- No errors or warnings in CloudWatch Logs
-- All automated checks passed successfully
+- Deployment Date: 2026-02-19
+- All stages completed successfully
+- Services are healthy and responding to requests
