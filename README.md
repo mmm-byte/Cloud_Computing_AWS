@@ -10,7 +10,7 @@
   <img alt="Labs completed" src="https://img.shields.io/badge/labs%20completed-8%20of%208-ff9900?style=flat">
 </p>
 
-This repository documents my work in the Cloud Computing course at Southern Methodist University (Spring 2025) and the AWS projects I built alongside it. It contains short study guides for each course module, write-ups of eight hands-on labs with the submitted PDFs as proof of work, and a project that deploys containerized services to AWS.
+This repository documents coursework in the Cloud Computing course at Southern Methodist University (Spring 2025) and hands-on AWS projects. It contains short study guides for each course module, write-ups of eight hands-on labs with submitted PDFs as proof of completion, and a project that deploys containerized services to AWS.
 
 ## Contents
 
@@ -58,7 +58,7 @@ This repository documents my work in the Cloud Computing course at Southern Meth
 
 ## Skills and evidence
 
-| Area | What I worked with | Study guide | Evidence |
+| Area | Services and tools | Study guide | Evidence |
 |---|---|---|---|
 | Identity and access | IAM users, groups, policies, MFA, access keys, permissions boundaries, role assumption | [Module 1](modules/01-iam/) | [Lab 1](labs/lab-01-iam/), [Lab 7](labs/lab-07-secure-architectures/) |
 | Compute | EC2, AMIs, launch templates, launching from the CLI | [Module 2](modules/02-compute-ec2-ebs-efs/) | [Lab 2](labs/lab-02-ec2/), [Lab 5](labs/lab-05-ec2-auto-scaling/) |
