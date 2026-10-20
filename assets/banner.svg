@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-labelledby="title desc">
+  <title id="title">AWS Cloud Skills</title>
+  <desc id="desc">Coursework, labs and projects in cloud computing on AWS</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1626"/>
+      <stop offset="1" stop-color="#1d3354"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1280" height="320" fill="url(#bg)"/>
+  <rect width="1280" height="320" fill="url(#grid)"/>
+  <rect x="64" y="64" width="8" height="112" rx="4" fill="#ff9900"/>
+
+  <text x="96" y="124" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="64" font-weight="700" fill="#ffffff">AWS Cloud Skills</text>
+  <text x="96" y="170" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="26" fill="#c9d6e8">Coursework, labs and projects</text>
+
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="18" fill="#e6edf7">
+    <rect x="96"  y="224" width="64"  height="36" rx="18" fill="#ffffff" fill-opacity="0.10" stroke="#ff9900" stroke-opacity="0.7"/>
+    <text x="128" y="248" text-anchor="middle">IAM</text>
+    <rect x="172" y="224" width="64"  height="36" rx="18" fill="#ffffff" fill-opacity="0.10" stroke="#ff9900" stroke-opacity="0.7"/>
+    <text x="204" y="248" text-anchor="middle">EC2</text>
+    <rect x="248" y="224" width="52"  height="36" rx="18" fill="#ffffff" fill-opacity="0.10" stroke="#ff9900" stroke-opacity="0.7"/>
+    <text x="274" y="248" text-anchor="middle">S3</text>
+    <rect x="312" y="224" width="64"  height="36" rx="18" fill="#ffffff" fill-opacity="0.10" stroke="#ff9900" stroke-opacity="0.7"/>
+    <text x="344" y="248" text-anchor="middle">VPC</text>
+    <rect x="388" y="224" width="96"  height="36" rx="18" fill="#ffffff" fill-opacity="0.10" stroke="#ff9900" stroke-opacity="0.7"/>
+    <text x="436" y="248" text-anchor="middle">Route 53</text>
+    <rect x="496" y="224" width="112" height="36" rx="18" fill="#ffffff" fill-opacity="0.10" stroke="#ff9900" stroke-opacity="0.7"/>
+    <text x="552" y="248" text-anchor="middle">CloudFront</text>
+    <rect x="620" y="224" width="128" height="36" rx="18" fill="#ffffff" fill-opacity="0.10" stroke="#ff9900" stroke-opacity="0.7"/>
+    <text x="684" y="248" text-anchor="middle">Auto Scaling</text>
+    <rect x="760" y="224" width="120" height="36" rx="18" fill="#ffffff" fill-opacity="0.10" stroke="#ff9900" stroke-opacity="0.7"/>
+    <text x="820" y="248" text-anchor="middle">CloudWatch</text>
+    <rect x="892" y="224" width="148" height="36" rx="18" fill="#ffffff" fill-opacity="0.10" stroke="#ff9900" stroke-opacity="0.7"/>
+    <text x="966" y="248" text-anchor="middle">CloudFormation</text>
+  </g>
+</svg>

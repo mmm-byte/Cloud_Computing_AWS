@@ -1,44 +1,37 @@
-# Lab 5: EC2 Auto Scaling
+# Lab 5: EC2 Auto Scaling (Launch Templates)
 
-**Course:** Cloud Computing (SMU)  
-**Module:** [5 - ELB and Auto Scaling](../../modules/05-elb-and-auto-scaling/)  
-**Author:** Mahindra Guptha Kotha  
-**Proof of work:** add the submitted lab PDF to [`proof/`](proof/) (see the note below)
+| | |
+|---|---|
+| **Module** | [Module 5: Resource Management and Scheduling](../../modules/05-elb-and-auto-scaling/) |
+| **Services** | EC2, launch templates, VPC, security groups |
+| **Proof of work** | [lab-05-ec2-auto-scaling.pdf](proof/lab-05-ec2-auto-scaling.pdf) (10 pages, redacted) |
 
-> Screenshots from the original submission are not embedded in this page. The submitted PDF in `proof/` contains them. Account IDs, access keys and passwords have been redacted from the text.
+## Objective
+Create the building block that Auto Scaling depends on: a launch template that configures an instance automatically at boot.
 
----
+## Exercise completed
 
-EXERCISE 10.1
-Create a Launch Template
-In this exercise, you'll create a launch template that installs and configures a simple web server. You'll then use the launch template to manually create an instance.
-         1. In the EC2 service console, click Launch Templates.
+| Exercise | Task | What it demonstrates |
+|---|---|---|
+| 10.1 | Create a launch template and launch an instance from it | Selected an Ubuntu Server LTS AMI and `t2.micro`, attached a security group that allows HTTP, and used user data to install Apache and publish a welcome page |
 
-         2. Click the Create Launch Template button.
+## How it works
+The launch template stores the AMI, instance type, security group and a user data script. The script runs once at first boot:
 
-         3. Give the launch template a name such as MyTemplate.
-
-         4. Click the Search For AMI link to locate one of the Ubuntu Server LTS AMIs. If you're in the us-east-1 region, you can use ami-0ac019f4fcb7cb7e6.
-
-         5. For Instance Type, select t2.micro.
-
-         6. Under Security Groups, select a security group that allows inbound HTTP access. Create a new security group if necessary.
-
-Creating a VPC for Security group
-
-         7. Expand the Advanced Details section and enter the following in the User Data text field:
+```bash
 #!/bin/bash
-    apt-get update
-    apt-get install -y apache2
-    echo "Welcome to my website"> index.html
-    cp index.html /var/www/html
+apt-get update
+apt-get install -y apache2
+echo "Welcome to my website" > index.html
+cp index.html /var/www/html
+```
 
-         8. Click the Create Launch Template button.
+After the instance booted, browsing to its public IP address returned the welcome page. The instance was terminated afterwards. A VPC was created to host the security group used by the template.
 
-         9. Click the Launch Instance From This Template link.
+## Key points
+- User data turns a generic AMI into a configured server with no manual steps.
+- An Auto Scaling group uses a launch template to create identical instances on demand, so this lab is the first half of a scaling setup.
+- Because every instance is built the same way, instances can be replaced instead of repaired.
 
-         10. Click the Launch Instance From Template button.
-
-         11. After the instance boots, browse to its public IP address. You should see a web page that says “Welcome to my website.”
-
-         12. Terminate the instance when you're done with it.
+## Related
+Module guide: [ELB and Auto Scaling](../../modules/05-elb-and-auto-scaling/). The scaling group itself is built in [Lab 8](../lab-08-high-performing-architectures/), Exercise 11.1.
